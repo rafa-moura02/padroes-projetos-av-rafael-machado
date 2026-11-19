@@ -1,0 +1,212 @@
+@startuml questao1
+title Questao 1 - Provisionamento Multinuvem\nPadroes: Abstract Factory (RNF01, RNF02, RNF03, RNF06) + Singleton (RNF04, RNF05)
+
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+hide empty members
+
+package "recurso" {
+  interface Recurso <<AbstractProduct (base)>> {
+    + getId() : String
+    + getProvedor() : String
+  }
+  interface MaquinaVirtual <<AbstractProductA>> {
+    + getCustoPorHora() : double
+  }
+  interface Armazenamento <<AbstractProductB>> {
+    + getQuantidadeGb() : int
+    + getCustoPorGbMes() : double
+  }
+  interface Fila <<AbstractProductC>> {
+    + getCustoFixoMensal() : double
+  }
+  Recurso <|-- MaquinaVirtual
+  Recurso <|-- Armazenamento
+  Recurso <|-- Fila
+}
+
+package "provedor" {
+  interface ProvedorFactory <<AbstractFactory>> {
+    + getNome() : String
+    + getTabelaPrecos() : TabelaPrecos
+    + criarMaquinaVirtual() : MaquinaVirtual
+    + criarArmazenamento(quantidadeGb : int) : Armazenamento
+    + criarFila() : Fila
+  }
+  class TabelaPrecos <<record>> {
+    + {static} HORAS_POR_MES : int = 730
+    + custoHoraMaquina : double
+    + custoGbMesArmazenamento : double
+    + custoFixoFila : double
+    + estimarCustoMensal(maquinas : int, gb : int) : double
+  }
+  ProvedorFactory ..> TabelaPrecos
+}
+
+package "provedor.aws" {
+  class AwsFactory <<ConcreteFactory1>> {
+    + {static} NOME : String = "Aws"
+  }
+  class AwsMaquinaVirtual <<ConcreteProductA1>> {
+    ~ {static} CUSTO_POR_HORA = 0.10
+    - id : String  "i-N"
+    ~ AwsMaquinaVirtual()
+  }
+  class AwsArmazenamento <<ConcreteProductB1>> {
+    ~ {static} CUSTO_POR_GB_MES = 0.023
+    - id : String  "s3://N"
+    - quantidadeGb : int
+    ~ AwsArmazenamento(quantidadeGb : int)
+  }
+  class AwsFila <<ConcreteProductC1>> {
+    ~ {static} CUSTO_FIXO_MENSAL = 0.40
+    - id : String  "sqs-N"
+    ~ AwsFila()
+  }
+}
+
+package "provedor.azure" {
+  class AzureFactory <<ConcreteFactory2>> {
+    + {static} NOME : String = "Azure"
+  }
+  class AzureMaquinaVirtual <<ConcreteProductA2>> {
+    ~ {static} CUSTO_POR_HORA = 0.12
+    - id : String  "vm-N"
+    ~ AzureMaquinaVirtual()
+  }
+  class AzureArmazenamento <<ConcreteProductB2>> {
+    ~ {static} CUSTO_POR_GB_MES = 0.02
+    - id : String  "blob://N"
+    - quantidadeGb : int
+    ~ AzureArmazenamento(quantidadeGb : int)
+  }
+  class AzureFila <<ConcreteProductC2>> {
+    ~ {static} CUSTO_FIXO_MENSAL = 0.50
+    - id : String  "sb-N"
+    ~ AzureFila()
+  }
+}
+
+ProvedorFactory <|.. AwsFactory
+ProvedorFactory <|.. AzureFactory
+MaquinaVirtual <|.. AwsMaquinaVirtual
+Armazenamento <|.. AwsArmazenamento
+Fila <|.. AwsFila
+MaquinaVirtual <|.. AzureMaquinaVirtual
+Armazenamento <|.. AzureArmazenamento
+Fila <|.. AzureFila
+AwsFactory ..> AwsMaquinaVirtual : <<create>>
+AwsFactory ..> AwsArmazenamento : <<create>>
+AwsFactory ..> AwsFila : <<create>>
+AzureFactory ..> AzureMaquinaVirtual : <<create>>
+AzureFactory ..> AzureArmazenamento : <<create>>
+AzureFactory ..> AzureFila : <<create>>
+
+package "config" {
+  class Configuracao <<Singleton>> {
+    - {static} LEITURAS : AtomicInteger
+    - regiaoPadrao : String
+    - orcamentoMaximo : double
+    - Configuracao()
+    + {static} getInstancia() : Configuracao
+    + getRegiaoPadrao() : String
+    + getOrcamentoMaximo() : double
+    + {static} getQuantidadeLeituras() : int
+  }
+  class "Configuracao.Holder" as ConfigHolder {
+    - {static} INSTANCIA : Configuracao
+  }
+  Configuracao +-- ConfigHolder
+}
+
+package "auditoria" {
+  class HistoricoAuditoria <<Singleton>> {
+    - registros : List<RegistroAuditoria>
+    - HistoricoAuditoria()
+    + {static} getInstancia() : HistoricoAuditoria
+    + <<synchronized>> registrar(ambiente, provedor, resultado, motivo)
+    + <<synchronized>> getRegistros() : List<RegistroAuditoria>
+    + <<synchronized>> imprimir()
+  }
+  class "HistoricoAuditoria.Holder" as HistHolder {
+    - {static} INSTANCIA : HistoricoAuditoria
+  }
+  class RegistroAuditoria <<record>> {
+    + sequencia : int
+    + dataHora : LocalDateTime
+    + ambiente : String
+    + provedor : String
+    + resultado : Resultado
+    + motivo : String
+  }
+  enum Resultado {
+    ACEITO
+    RECUSADO
+  }
+  HistoricoAuditoria +-- HistHolder
+  HistoricoAuditoria "1" *-- "*" RegistroAuditoria
+  RegistroAuditoria --> Resultado
+}
+
+package "ambiente" {
+  class Provisionador <<Client (Abstract Factory)>> {
+    - fabrica : ProvedorFactory
+    + Provisionador(fabrica : ProvedorFactory)
+    + provisionar(s : SolicitacaoAmbiente) : Ambiente
+  }
+  class SolicitacaoAmbiente <<record>> {
+    + nomeAmbiente : String
+    + provedor : String
+    + quantidadeMaquinas : int
+    + quantidadeGb : int
+  }
+  class Ambiente {
+    - nome : String
+    - provedor : String
+    - regiao : String
+    - custoMensalEstimado : double
+    ~ Ambiente(...)
+    - validarMesmoProvedor()
+    + resumo() : String
+  }
+  class ProvisionamentoRecusadoException
+}
+
+Provisionador --> "1" ProvedorFactory : usa (injetada)
+Provisionador ..> SolicitacaoAmbiente
+Provisionador ..> Ambiente : <<create>>
+Provisionador ..> ProvisionamentoRecusadoException : <<throws>>
+Provisionador ..> Configuracao : getInstancia()
+Provisionador ..> HistoricoAuditoria : getInstancia()
+Ambiente "1" o-- "*" MaquinaVirtual
+Ambiente "1" o-- "1" Armazenamento
+Ambiente "1" o-- "1" Fila
+
+class SeletorProvedor <<escolhe o provedor>> {
+  + {static} obter(provedor : String) : ProvedorFactory
+}
+class Main {
+  + {static} main(args : String[])
+}
+SeletorProvedor ..> AwsFactory : <<create>>
+SeletorProvedor ..> AzureFactory : <<create>>
+SeletorProvedor ..> ProvedorFactory
+Main ..> SeletorProvedor
+Main ..> Provisionador : <<create>> (1 por thread)
+Main ..> HistoricoAuditoria : imprimir()
+
+note right of Provisionador
+  Conhece apenas ProvedorFactory e as interfaces
+  de recurso: sem if/switch de provedor (RNF02).
+  Recusa por orcamento ANTES de criar recursos (RF05).
+end note
+note bottom of SeletorProvedor
+  Unica classe alterada ao incluir um
+  novo provedor (ex.: GcpFactory) - RNF03.
+end note
+note bottom of AwsMaquinaVirtual
+  Construtores package-private: apenas a
+  fabrica do proprio provedor instancia
+  os recursos concretos (RNF06).
+end note
+@enduml
