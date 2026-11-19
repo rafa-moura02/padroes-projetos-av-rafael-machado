@@ -2,7 +2,6 @@ package servico;
 
 import java.util.List;
 
-/** Decorator - ConcreteComponent: a venda do lote, sem servicos adicionais. */
 public class CompraBase implements Compra {
 
     private final String nomeLote;

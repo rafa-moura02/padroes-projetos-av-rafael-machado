@@ -1,6 +1,5 @@
 package servico;
 
-/** ConcreteDecorator: certificado de autenticidade, R$ 300,00 fixos. */
 public class CertificadoAutenticidade extends ServicoAdicional {
 
     public CertificadoAutenticidade(Compra compra) {

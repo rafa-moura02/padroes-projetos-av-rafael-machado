@@ -4,7 +4,6 @@ import lote.Lance;
 import lote.Lote;
 import util.Moeda;
 
-/** Observer - ConcreteObserver: participante que da lances e acompanha lotes (RF04). */
 public class Participante implements Licitante, ObservadorLance {
 
     private final String nome;

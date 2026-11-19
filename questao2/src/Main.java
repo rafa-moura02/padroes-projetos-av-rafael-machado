@@ -1,7 +1,6 @@
 import acerto.AcertoVendedor;
 import comissao.ComissaoArte;
 import comissao.ComissaoEletronicos;
-import comissao.ComissaoImoveis;
 import comissao.ComissaoVeiculos;
 import lote.Categoria;
 import lote.Lote;
@@ -19,16 +18,12 @@ import servico.ImpressoraFatura;
 import servico.SeguroTransporte;
 import util.Moeda;
 
-/** RF11: cenario completo da casa de leiloes. */
 public class Main {
 
     public static void main(String[] args) {
         Categoria arte = new Categoria("Arte", new ComissaoArte());
         Categoria veiculos = new Categoria("Veiculos", new ComissaoVeiculos());
-        Categoria imoveis = new Categoria("Imoveis", new ComissaoImoveis());
         Categoria eletronicos = new Categoria("Eletronicos", new ComissaoEletronicos());
-        System.out.println("Categorias disponiveis: " + arte.nome() + ", " + veiculos.nome() + ", "
-                + imoveis.nome() + ", " + eletronicos.nome() + "\n");
 
         Lote quadro = new Lote("Quadro Entardecer no Litoral", arte, 10_000.00, 15_000.00);
         Lote fusca = new Lote("Fusca 1974 restaurado", veiculos, 20_000.00, 60_000.00);
@@ -48,20 +43,20 @@ public class Main {
         }
 
         titulo("Lances no lote " + quadro.getNome());
-        lance(quadro, ana, 10_500.00);   // aceito (exatamente 5%)
-        lance(quadro, bruno, 10_800.00); // recusado (< 5%)
-        lance(quadro, bruno, 12_000.00); // aceito
-        lance(quadro, carla, 13_000.00); // aceito
+        lance(quadro, ana, 10_500.00);
+        lance(quadro, bruno, 10_800.00); // menos de 5%, vai ser recusado
+        lance(quadro, bruno, 12_000.00);
+        lance(quadro, carla, 13_000.00);
 
         titulo("Carla deixa de acompanhar o lote " + quadro.getNome());
         quadro.desanexar(carla);
-        lance(quadro, ana, 14_000.00);   // aceito - Carla NAO e notificada
-        lance(quadro, bruno, 16_000.00); // aceito
+        lance(quadro, ana, 14_000.00);
+        lance(quadro, bruno, 16_000.00);
 
         titulo("Lances no lote " + fusca.getNome());
-        lance(fusca, carla, 22_000.00);  // aceito
-        lance(fusca, ana, 22_500.00);    // recusado (< 5%)
-        lance(fusca, bruno, 25_000.00);  // aceito
+        lance(fusca, carla, 22_000.00);
+        lance(fusca, ana, 22_500.00);
+        lance(fusca, bruno, 25_000.00);
 
         titulo("Campanha: lote " + quadro.getNome() + " passa a usar a regra de Eletronicos");
         System.out.println("Regra anterior: " + quadro.getRegraComissao().getDescricao());
@@ -75,7 +70,7 @@ public class Main {
         System.out.println(fusca.getNome() + " -> " + fusca.encerrar()
                 + " (maior lance " + Moeda.formatar(fusca.getLanceAtual())
                 + ", reserva " + Moeda.formatar(fusca.getPrecoReserva()) + ")");
-        lance(fusca, ana, 30_000.00);    // recusado: lote encerrado
+        lance(fusca, ana, 30_000.00); // lote ja encerrado
 
         titulo("Acerto com os vendedores");
         AcertoVendedor.imprimir(quadro);
@@ -88,7 +83,7 @@ public class Main {
         compra = new SeguroTransporte(compra);
         compra = new CertificadoAutenticidade(compra);
         compra = new EmbalagemEspecial(compra);
-        compra = new EmbalagemEspecial(compra); // contratado duas vezes
+        compra = new EmbalagemEspecial(compra);
         compra = new EntregaExpressa(compra);
         ImpressoraFatura.imprimir(compra);
 

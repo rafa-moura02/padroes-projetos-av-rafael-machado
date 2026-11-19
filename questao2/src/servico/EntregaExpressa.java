@@ -1,6 +1,5 @@
 package servico;
 
-/** ConcreteDecorator: entrega expressa, R$ 450,00 fixos. */
 public class EntregaExpressa extends ServicoAdicional {
 
     public EntregaExpressa(Compra compra) {

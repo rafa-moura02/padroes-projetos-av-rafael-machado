@@ -1,38 +1,34 @@
-# Padrões de Projetos — Avaliação Semestral
+# Padrões de Projetos - Avaliação Semestral
 
-Universidade Positivo — Padrões de Projetos.
+Rafael Moura Machado - Universidade Positivo
 
-Java 17+ (testado com OpenJDK 21), apenas a biblioteca padrão.
+Feito em Java (usei o JDK 21), sem bibliotecas externas.
 
-## Questão 1 — Provisionamento Multinuvem
+## Questão 1 - Provisionamento Multinuvem
 
-| Requisito | Padrão | Onde |
-|---|---|---|
-| RNF01, RNF02, RNF03, RNF06 | **Abstract Factory** | `ProvedorFactory` (AbstractFactory), `AwsFactory`/`AzureFactory` (ConcreteFactory), `MaquinaVirtual`/`Armazenamento`/`Fila` (AbstractProduct), `Aws*`/`Azure*` (ConcreteProduct), `Provisionador` (Client) |
-| RNF04 | **Singleton** | `config.Configuracao` (lê `config.properties` uma única vez) |
-| RNF05 | **Singleton** thread-safe | `auditoria.HistoricoAuditoria` (métodos `synchronized`) |
+Padrões usados:
+- **Abstract Factory**: `ProvedorFactory` com `AwsFactory` e `AzureFactory`, cada uma cria a máquina virtual, o armazenamento e a fila do seu provedor. Assim não tem como misturar recursos de provedores diferentes, e o `Provisionador` só recebe a fábrica sem saber qual é.
+- **Singleton**: `Configuracao` (lê o `config.properties` uma vez só) e `HistoricoAuditoria` (com `synchronized` para funcionar com as threads).
 
-Diagrama: `questao1/diagrama/diagrama_classes.puml`
-
-```bash
+Para rodar:
+```
 cd questao1
-javac -d out $(find src -name '*.java')
+javac -d out $(find src -name "*.java")
 java -cp out Main
 ```
 
-## Questão 2 — Casa de Leilões Online
+## Questão 2 - Casa de Leilões Online
 
-| Requisito | Padrão | Onde |
-|---|---|---|
-| RNF01 | **Observer** | `SujeitoLance` (Subject), `Lote` (ConcreteSubject), `ObservadorLance` (Observer), `Participante`/`PainelLeiloeiro`/`Auditor` (ConcreteObserver) |
-| RNF02 | **Strategy** | `RegraComissao` (Strategy), `ComissaoArte`/`ComissaoVeiculos`/`ComissaoImoveis`/`ComissaoEletronicos` (ConcreteStrategy), `Lote` (Context) |
-| RNF03, RNF04 | **Decorator** | `Compra` (Component), `CompraBase` (ConcreteComponent), `ServicoAdicional` (Decorator), `SeguroTransporte`/`CertificadoAutenticidade`/`EmbalagemEspecial`/`EntregaExpressa` (ConcreteDecorator) |
-| RNF05 | Pacotes independentes | `observador`, `comissao` e `servico` não dependem uns dos outros |
+Padrões usados:
+- **Observer**: o `Lote` avisa os `ObservadorLance` (participante, painel do leiloeiro e auditor) a cada lance aceito.
+- **Strategy**: `RegraComissao` com uma classe para cada categoria, dá para trocar a regra do lote durante o leilão.
+- **Decorator**: os serviços adicionais (`ServicoAdicional`) vão embrulhando a `CompraBase`, em qualquer ordem e quantidade.
 
-Diagrama: `questao2/diagrama/diagrama_classes.puml`
-
-```bash
+Para rodar:
+```
 cd questao2
-javac -d out $(find src -name '*.java')
+javac -d out $(find src -name "*.java")
 java -cp out Main
 ```
+
+Os diagramas de classes estão em `questao1/diagrama` e `questao2/diagrama` (PlantUML).

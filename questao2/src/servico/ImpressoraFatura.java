@@ -2,10 +2,6 @@ package servico;
 
 import util.Moeda;
 
-/**
- * RF09 / RNF04: imprime a fatura tratando qualquer Compra da mesma forma,
- * sem verificar quais (ou quantos) servicos foram contratados.
- */
 public final class ImpressoraFatura {
 
     private ImpressoraFatura() {

@@ -11,11 +11,6 @@ import observador.ObservadorLance;
 import observador.SujeitoLance;
 import util.Moeda;
 
-/**
- * Observer - ConcreteSubject (RNF01): conhece apenas a interface ObservadorLance.
- * Strategy - Context (RNF02): delega o calculo da comissao a RegraComissao,
- * que pode ser trocada em tempo de execucao (RF07).
- */
 public class Lote implements SujeitoLance {
 
     private static final BigDecimal INCREMENTO_MINIMO = new BigDecimal("1.05");
@@ -39,7 +34,6 @@ public class Lote implements SujeitoLance {
         this.regraComissao = categoria.regraPadrao();
     }
 
-    // ---------------- Observer ----------------
 
     @Override
     public void anexar(ObservadorLance observador) {
@@ -53,7 +47,6 @@ public class Lote implements SujeitoLance {
         observadores.remove(observador);
     }
 
-    /** RF03: comunica o lance a todos os observadores, exceto ao autor do lance. */
     @Override
     public void notificar(Lance lance) {
         for (ObservadorLance observador : List.copyOf(observadores)) {
@@ -63,9 +56,7 @@ public class Lote implements SujeitoLance {
         }
     }
 
-    // ---------------- Lances ----------------
 
-    /** RF02: aceita apenas lances pelo menos 5% maiores que o lance atual. */
     public ResultadoLance darLance(Licitante licitante, double valor) {
         if (status != StatusLote.ABERTO) {
             return new ResultadoLance(false, "Lance de " + licitante.getNome() + " de "
@@ -85,7 +76,6 @@ public class Lote implements SujeitoLance {
                 + Moeda.formatar(valor) + " aceito no lote '" + nome + "'.");
     }
 
-    /** RF01: o lance atual e o preco inicial ate o primeiro lance. */
     public double getLanceAtual() {
         return getMaiorLance().map(Lance::valor).orElse(precoInicial);
     }
@@ -94,9 +84,7 @@ public class Lote implements SujeitoLance {
         return lances.isEmpty() ? Optional.empty() : Optional.of(lances.get(lances.size() - 1));
     }
 
-    // ---------------- Encerramento / comissao ----------------
 
-    /** RF05/RF07: vende se o maior lance >= reserva, cobrando a regra vigente agora. */
     public StatusLote encerrar() {
         if (status != StatusLote.ABERTO) {
             throw new IllegalStateException("Lote '" + nome + "' ja foi encerrado.");
@@ -111,7 +99,6 @@ public class Lote implements SujeitoLance {
         return status;
     }
 
-    /** RF07: troca a estrategia de comissao sem recriar o lote. */
     public void setRegraComissao(RegraComissao novaRegra) {
         if (status != StatusLote.ABERTO) {
             throw new IllegalStateException("Regra so pode ser trocada antes do encerramento.");

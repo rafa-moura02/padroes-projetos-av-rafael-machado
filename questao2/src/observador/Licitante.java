@@ -1,6 +1,6 @@
 package observador;
 
-/** Quem pode dar lances. Permite ao lote identificar o autor sem conhecer a classe concreta. */
+// usado no lance para o lote nao depender da classe Participante
 public interface Licitante {
     String getNome();
 }

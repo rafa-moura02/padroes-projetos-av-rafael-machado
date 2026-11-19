@@ -8,7 +8,6 @@ import lote.Lance;
 import lote.Lote;
 import util.Moeda;
 
-/** Observer - ConcreteObserver: registra todos os lances aceitos com data e hora (RF04). */
 public class Auditor implements ObservadorLance {
 
     private static final DateTimeFormatter FORMATO =

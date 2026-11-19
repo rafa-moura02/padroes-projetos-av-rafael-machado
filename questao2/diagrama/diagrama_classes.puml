@@ -24,7 +24,6 @@ package "observador" <<Observer>> {
   }
   class PainelLeiloeiro <<ConcreteObserver>> {
     - totalLances : Map<Lote, Integer>
-    - maiorLance : Map<Lote, Lance>
     + atualizar(lote, lance)
   }
   class Auditor <<ConcreteObserver>> {

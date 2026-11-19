@@ -4,7 +4,6 @@ import lote.Lote;
 import lote.StatusLote;
 import util.Moeda;
 
-/** RF10: imprime valor de venda, comissao cobrada e valor liquido ao vendedor. */
 public final class AcertoVendedor {
 
     private AcertoVendedor() {

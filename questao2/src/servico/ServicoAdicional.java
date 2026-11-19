@@ -3,11 +3,7 @@ package servico;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Padrao Decorator - Decorator abstrato.
- * Envolve qualquer Compra e acrescenta sua descricao e seu custo a fatura,
- * permitindo qualquer combinacao, ordem e quantidade de servicos.
- */
+// Decorator base: cada servico embrulha a compra e soma o seu custo
 public abstract class ServicoAdicional implements Compra {
 
     protected final Compra compra;

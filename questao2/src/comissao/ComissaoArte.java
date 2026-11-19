@@ -1,6 +1,5 @@
 package comissao;
 
-/** ConcreteStrategy: Arte, 20% do valor. */
 public class ComissaoArte implements RegraComissao {
 
     @Override

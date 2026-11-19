@@ -1,6 +1,5 @@
 package comissao;
 
-/** ConcreteStrategy: Imoveis, 3% do valor mais R$ 1.500,00 fixos. */
 public class ComissaoImoveis implements RegraComissao {
 
     private static final double FIXO = 1_500.00;

@@ -6,19 +6,17 @@ import lote.Lance;
 import lote.Lote;
 import util.Moeda;
 
-/** Observer - ConcreteObserver: exibe o maior lance e o total de lances de cada lote (RF04). */
 public class PainelLeiloeiro implements ObservadorLance {
 
     private final Map<Lote, Integer> totalLances = new HashMap<>();
-    private final Map<Lote, Lance> maiorLance = new HashMap<>();
 
     @Override
     public void atualizar(Lote lote, Lance lance) {
-        int total = totalLances.merge(lote, 1, Integer::sum);
-        maiorLance.merge(lote, lance, (atual, novo) -> novo.valor() > atual.valor() ? novo : atual);
-        Lance maior = maiorLance.get(lote);
+        // como o lance so e aceito se for maior, o ultimo recebido e sempre o maior
+        int total = totalLances.getOrDefault(lote, 0) + 1;
+        totalLances.put(lote, total);
         System.out.println("   [Painel do leiloeiro] '" + lote.getNome() + "' | maior lance: "
-                + Moeda.formatar(maior.valor()) + " (" + maior.licitante().getNome()
+                + Moeda.formatar(lance.valor()) + " (" + lance.licitante().getNome()
                 + ") | total de lances: " + total);
     }
 }

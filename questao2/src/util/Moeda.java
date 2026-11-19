@@ -2,7 +2,6 @@ package util;
 
 import java.util.Locale;
 
-/** Formatacao de valores monetarios em reais. */
 public final class Moeda {
 
     private static final Locale PT_BR = Locale.forLanguageTag("pt-BR");

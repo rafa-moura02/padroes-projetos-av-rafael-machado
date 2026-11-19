@@ -1,6 +1,5 @@
 package comissao;
 
-/** ConcreteStrategy: Eletronicos, 12% do valor com minimo de R$ 50,00. */
 public class ComissaoEletronicos implements RegraComissao {
 
     private static final double MINIMO = 50.00;

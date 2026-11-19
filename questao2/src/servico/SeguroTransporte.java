@@ -1,6 +1,5 @@
 package servico;
 
-/** ConcreteDecorator: seguro de transporte, 1,5% do valor de venda. */
 public class SeguroTransporte extends ServicoAdicional {
 
     public SeguroTransporte(Compra compra) {
