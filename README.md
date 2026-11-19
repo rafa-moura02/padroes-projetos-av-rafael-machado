@@ -19,3 +19,20 @@ cd questao1
 javac -d out $(find src -name '*.java')
 java -cp out Main
 ```
+
+## Questão 2 — Casa de Leilões Online
+
+| Requisito | Padrão | Onde |
+|---|---|---|
+| RNF01 | **Observer** | `SujeitoLance` (Subject), `Lote` (ConcreteSubject), `ObservadorLance` (Observer), `Participante`/`PainelLeiloeiro`/`Auditor` (ConcreteObserver) |
+| RNF02 | **Strategy** | `RegraComissao` (Strategy), `ComissaoArte`/`ComissaoVeiculos`/`ComissaoImoveis`/`ComissaoEletronicos` (ConcreteStrategy), `Lote` (Context) |
+| RNF03, RNF04 | **Decorator** | `Compra` (Component), `CompraBase` (ConcreteComponent), `ServicoAdicional` (Decorator), `SeguroTransporte`/`CertificadoAutenticidade`/`EmbalagemEspecial`/`EntregaExpressa` (ConcreteDecorator) |
+| RNF05 | Pacotes independentes | `observador`, `comissao` e `servico` não dependem uns dos outros |
+
+Diagrama: `questao2/diagrama/diagrama_classes.puml`
+
+```bash
+cd questao2
+javac -d out $(find src -name '*.java')
+java -cp out Main
+```

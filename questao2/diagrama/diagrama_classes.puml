@@ -1,0 +1,188 @@
+@startuml questao2
+title Questao 2 - Casa de Leiloes Online\nPadroes: Observer (RNF01) + Strategy (RNF02) + Decorator (RNF03, RNF04)
+
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+hide empty members
+
+' ===================== OBSERVER =====================
+package "observador" <<Observer>> {
+  interface SujeitoLance <<Subject>> {
+    + anexar(o : ObservadorLance)
+    + desanexar(o : ObservadorLance)
+    + notificar(lance : Lance)
+  }
+  interface ObservadorLance <<Observer>> {
+    + atualizar(lote : Lote, lance : Lance)
+  }
+  interface Licitante {
+    + getNome() : String
+  }
+  class Participante <<ConcreteObserver>> {
+    - nome : String
+    + atualizar(lote, lance)
+  }
+  class PainelLeiloeiro <<ConcreteObserver>> {
+    - totalLances : Map<Lote, Integer>
+    - maiorLance : Map<Lote, Lance>
+    + atualizar(lote, lance)
+  }
+  class Auditor <<ConcreteObserver>> {
+    - registros : List<String>
+    + atualizar(lote, lance)
+    + getRegistros() : List<String>
+    + imprimirRegistros()
+  }
+}
+ObservadorLance <|.. Participante
+ObservadorLance <|.. PainelLeiloeiro
+ObservadorLance <|.. Auditor
+Licitante <|.. Participante
+
+' ===================== LOTE =====================
+package "lote" {
+  class Lote <<ConcreteSubject / Strategy Context>> {
+    - nome : String
+    - precoInicial : double
+    - precoReserva : double
+    - status : StatusLote
+    - comissaoCobrada : double
+    + darLance(l : Licitante, valor : double) : ResultadoLance
+    + getLanceAtual() : double
+    + getMaiorLance() : Optional<Lance>
+    + encerrar() : StatusLote
+    + setRegraComissao(r : RegraComissao)
+    + getRegraComissao() : RegraComissao
+    + getValorVenda() : double
+    + getComprador() : Licitante
+    + getComissaoCobrada() : double
+  }
+  class Lance <<record>> {
+    + licitante : Licitante
+    + valor : double
+    + dataHora : LocalDateTime
+  }
+  class ResultadoLance <<record>> {
+    + aceito : boolean
+    + mensagem : String
+  }
+  class Categoria <<record>> {
+    + nome : String
+    + regraPadrao : RegraComissao
+  }
+  enum StatusLote {
+    ABERTO
+    VENDIDO
+    NAO_VENDIDO
+  }
+}
+SujeitoLance <|.. Lote
+Lote "1" o-- "*" ObservadorLance : observadores
+Lote "1" *-- "*" Lance : lances
+Lote --> "1" Categoria
+Lote --> StatusLote
+Lote ..> ResultadoLance : <<create>>
+Lance --> Licitante
+
+' ===================== STRATEGY =====================
+package "comissao" <<Strategy>> {
+  interface RegraComissao <<Strategy>> {
+    + calcular(valorVenda : double) : double
+    + getDescricao() : String
+  }
+  class ComissaoArte <<ConcreteStrategy>>
+  class ComissaoVeiculos <<ConcreteStrategy>>
+  class ComissaoImoveis <<ConcreteStrategy>>
+  class ComissaoEletronicos <<ConcreteStrategy>>
+}
+RegraComissao <|.. ComissaoArte
+RegraComissao <|.. ComissaoVeiculos
+RegraComissao <|.. ComissaoImoveis
+RegraComissao <|.. ComissaoEletronicos
+Lote o--> "1" RegraComissao : regraComissao (trocavel)
+Categoria --> RegraComissao
+
+package "acerto" {
+  class AcertoVendedor {
+    + {static} imprimir(lote : Lote)
+  }
+}
+AcertoVendedor ..> Lote
+
+' ===================== DECORATOR =====================
+package "servico" <<Decorator>> {
+  interface Compra <<Component>> {
+    + getNomeLote() : String
+    + getComprador() : String
+    + getValorVenda() : double
+    + getServicos() : List<ItemServico>
+    + getTotal() : double
+  }
+  class CompraBase <<ConcreteComponent>> {
+    - nomeLote : String
+    - comprador : String
+    - valorVenda : double
+  }
+  abstract class ServicoAdicional <<Decorator>> {
+    # compra : Compra
+    # {abstract} getDescricao() : String
+    # {abstract} getCusto() : double
+    + getServicos() : List<ItemServico>
+    + getTotal() : double
+  }
+  class SeguroTransporte <<ConcreteDecorator>>
+  class CertificadoAutenticidade <<ConcreteDecorator>>
+  class EmbalagemEspecial <<ConcreteDecorator>>
+  class EntregaExpressa <<ConcreteDecorator>>
+  class ItemServico <<record>> {
+    + descricao : String
+    + custo : double
+  }
+  class ImpressoraFatura <<Client>> {
+    + {static} imprimir(compra : Compra)
+  }
+}
+Compra <|.. CompraBase
+Compra <|.. ServicoAdicional
+ServicoAdicional o--> "1" Compra : compra
+ServicoAdicional <|-- SeguroTransporte
+ServicoAdicional <|-- CertificadoAutenticidade
+ServicoAdicional <|-- EmbalagemEspecial
+ServicoAdicional <|-- EntregaExpressa
+ServicoAdicional ..> ItemServico : <<create>>
+ImpressoraFatura ..> Compra
+
+package "util" {
+  class Moeda {
+    + {static} formatar(valor : double) : String
+  }
+}
+
+class Main {
+  + {static} main(args : String[])
+}
+Main ..> Lote
+Main ..> Participante
+Main ..> PainelLeiloeiro
+Main ..> Auditor
+Main ..> RegraComissao
+Main ..> CompraBase
+Main ..> ServicoAdicional
+Main ..> ImpressoraFatura
+Main ..> AcertoVendedor
+
+note right of Lote
+  Conhece apenas ObservadorLance (RNF01):
+  notifica todos, exceto o autor do lance.
+  Comissao calculada pela regra vigente
+  no encerramento, sem if/switch (RNF02).
+end note
+note bottom of ImpressoraFatura
+  Trata da mesma forma uma compra sem servicos
+  e uma compra decorada com N servicos (RNF04).
+end note
+note bottom of ServicoAdicional
+  Sem classes de combinacao (RNF03): servicos sao
+  empilhados em qualquer ordem e quantidade.
+end note
+@enduml
