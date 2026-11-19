@@ -3,7 +3,7 @@ package provedor.azure;
 import java.util.concurrent.atomic.AtomicInteger;
 import recurso.MaquinaVirtual;
 
-/** ConcreteProductA2. Construtor package-private: so a AzureFactory instancia (RNF06). */
+// construtor sem public para so a AzureFactory conseguir criar
 class AzureMaquinaVirtual implements MaquinaVirtual {
 
     static final double CUSTO_POR_HORA = 0.12;

@@ -9,13 +9,7 @@ import java.util.Locale;
 import provedor.ProvedorFactory;
 import recurso.MaquinaVirtual;
 
-/**
- * Abstract Factory - Client (RNF02).
- * Monta o ambiente usando apenas as interfaces ProvedorFactory e recurso.*:
- * nao conhece classes concretas de provedor e nao usa if/switch para escolhe-lo.
- * Recebe de fora (construtor) a unica fabrica que cria os tres recursos.
- * Obtem regiao/orcamento e o historico pelos Singletons, sem parametros.
- */
+// Monta o ambiente usando so a fabrica recebida, sem saber qual provedor e
 public class Provisionador {
 
     private static final Locale PT_BR = Locale.forLanguageTag("pt-BR");
@@ -34,7 +28,7 @@ public class Provisionador {
         double custo = fabrica.getTabelaPrecos()
                 .estimarCustoMensal(solicitacao.quantidadeMaquinas(), solicitacao.quantidadeGb());
 
-        // RF05: recusa ANTES de criar qualquer recurso.
+        // se passar do orcamento recusa antes de criar qualquer recurso
         if (custo > config.getOrcamentoMaximo()) {
             String motivo = String.format(PT_BR,
                     "custo estimado R$ %,.2f ultrapassa o orcamento de R$ %,.2f",

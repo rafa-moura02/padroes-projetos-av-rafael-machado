@@ -3,7 +3,6 @@ package provedor.azure;
 import java.util.concurrent.atomic.AtomicInteger;
 import recurso.Armazenamento;
 
-/** ConcreteProductB2 (Blob Storage). */
 class AzureArmazenamento implements Armazenamento {
 
     static final double CUSTO_POR_GB_MES = 0.02;

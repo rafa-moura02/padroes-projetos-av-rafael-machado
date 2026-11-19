@@ -3,7 +3,6 @@ package auditoria;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-/** Registro imutavel de um provisionamento (RF07). */
 public record RegistroAuditoria(int sequencia, LocalDateTime dataHora, String ambiente,
         String provedor, Resultado resultado, String motivo) {
 

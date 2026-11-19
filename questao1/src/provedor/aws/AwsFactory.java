@@ -6,7 +6,6 @@ import recurso.Armazenamento;
 import recurso.Fila;
 import recurso.MaquinaVirtual;
 
-/** Abstract Factory - ConcreteFactory da Aws (RF01). */
 public class AwsFactory implements ProvedorFactory {
 
     public static final String NOME = "Aws";

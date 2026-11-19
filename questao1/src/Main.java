@@ -8,10 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-/**
- * RF08: quatro provisionamentos (dois Aws, um Azure e um recusado por
- * orcamento), todos disparados simultaneamente em threads distintas.
- */
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {

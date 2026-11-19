@@ -3,7 +3,6 @@ package provedor.aws;
 import java.util.concurrent.atomic.AtomicInteger;
 import recurso.Armazenamento;
 
-/** ConcreteProductB1 (S3). */
 class AwsArmazenamento implements Armazenamento {
 
     static final double CUSTO_POR_GB_MES = 0.023;

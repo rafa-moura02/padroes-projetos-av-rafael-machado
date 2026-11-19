@@ -6,7 +6,6 @@ import recurso.Armazenamento;
 import recurso.Fila;
 import recurso.MaquinaVirtual;
 
-/** Abstract Factory - ConcreteFactory da Azure (RF02). */
 public class AzureFactory implements ProvedorFactory {
 
     public static final String NOME = "Azure";

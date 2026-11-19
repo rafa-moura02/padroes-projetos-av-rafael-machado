@@ -3,7 +3,6 @@ package provedor.aws;
 import java.util.concurrent.atomic.AtomicInteger;
 import recurso.Fila;
 
-/** ConcreteProductC1 (SQS). */
 class AwsFila implements Fila {
 
     static final double CUSTO_FIXO_MENSAL = 0.40;

@@ -104,7 +104,7 @@ AzureFactory ..> AzureFila : <<create>>
 
 package "config" {
   class Configuracao <<Singleton>> {
-    - {static} LEITURAS : AtomicInteger
+    - {static} leituras : int
     - regiaoPadrao : String
     - orcamentoMaximo : double
     - Configuracao()

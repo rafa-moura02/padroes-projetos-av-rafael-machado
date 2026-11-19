@@ -7,11 +7,6 @@ import recurso.Fila;
 import recurso.MaquinaVirtual;
 import recurso.Recurso;
 
-/**
- * Produto montado pelo Provisionador. O construtor e package-private: so o
- * Provisionador (que usa uma unica fabrica) cria ambientes. Como defesa extra
- * do RNF01, o construtor rejeita recursos de provedores diferentes.
- */
 public final class Ambiente {
 
     private static final Locale PT_BR = Locale.forLanguageTag("pt-BR");
@@ -74,7 +69,6 @@ public final class Ambiente {
         return custoMensalEstimado;
     }
 
-    /** RF06: resumo do provisionamento aceito. */
     public String resumo() {
         StringBuilder sb = new StringBuilder();
         sb.append("----- Ambiente provisionado: ").append(nome).append(" -----\n");

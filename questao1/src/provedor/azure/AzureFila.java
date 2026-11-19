@@ -3,7 +3,6 @@ package provedor.azure;
 import java.util.concurrent.atomic.AtomicInteger;
 import recurso.Fila;
 
-/** ConcreteProductC2 (Service Bus). */
 class AzureFila implements Fila {
 
     static final double CUSTO_FIXO_MENSAL = 0.50;

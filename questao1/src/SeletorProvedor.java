@@ -2,11 +2,7 @@ import provedor.ProvedorFactory;
 import provedor.aws.AwsFactory;
 import provedor.azure.AzureFactory;
 
-/**
- * Componente (usado pela Main) que escolhe a fabrica concreta a partir do
- * nome do provedor. E o UNICO ponto a alterar ao incluir um novo provedor
- * (ex.: Gcp -> criar GcpFactory + produtos e adicionar um case aqui) - RNF03.
- */
+// Escolhe a fabrica pelo nome. Para adicionar Gcp basta criar as classes e um case aqui
 public final class SeletorProvedor {
 
     private SeletorProvedor() {

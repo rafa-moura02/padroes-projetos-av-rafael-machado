@@ -5,17 +5,11 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Padrao Singleton (RNF04).
- * Le o arquivo config.properties uma unica vez (inicializacao preguicosa e
- * thread-safe via "Initialization-on-demand holder") e expoe os mesmos valores
- * para todas as classes, sem que a configuracao seja passada por parametro.
- */
+// Singleton que le o config.properties uma vez so
 public final class Configuracao {
 
-    private static final AtomicInteger LEITURAS = new AtomicInteger();
+    private static int leituras = 0;
 
     private final String regiaoPadrao;
     private final double orcamentoMaximo;
@@ -28,24 +22,18 @@ public final class Configuracao {
         } catch (IOException e) {
             throw new IllegalStateException("Nao foi possivel ler " + arquivo.toAbsolutePath(), e);
         }
-        LEITURAS.incrementAndGet();
+        leituras++;
         this.regiaoPadrao = props.getProperty("regiao.padrao").trim();
         this.orcamentoMaximo = Double.parseDouble(props.getProperty("orcamento.maximo").trim());
     }
 
+    // procura o arquivo rodando de dentro da pasta questao1 ou da src
     private static Path localizarArquivo() {
-        String informado = System.getProperty("config.path");
-        if (informado != null) {
-            return Path.of(informado);
+        Path arquivo = Path.of("src/config.properties");
+        if (!Files.exists(arquivo)) {
+            arquivo = Path.of("config.properties");
         }
-        for (String candidato : new String[] {"config.properties", "src/config.properties",
-                "questao1/src/config.properties"}) {
-            Path p = Path.of(candidato);
-            if (Files.exists(p)) {
-                return p;
-            }
-        }
-        throw new IllegalStateException("Arquivo config.properties nao encontrado");
+        return arquivo;
     }
 
     private static final class Holder {
@@ -64,8 +52,7 @@ public final class Configuracao {
         return orcamentoMaximo;
     }
 
-    /** Quantidade de vezes que o arquivo foi lido (deve ser sempre 1). */
     public static int getQuantidadeLeituras() {
-        return LEITURAS.get();
+        return leituras;
     }
 }

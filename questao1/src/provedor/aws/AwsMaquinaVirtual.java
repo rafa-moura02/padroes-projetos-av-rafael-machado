@@ -3,7 +3,7 @@ package provedor.aws;
 import java.util.concurrent.atomic.AtomicInteger;
 import recurso.MaquinaVirtual;
 
-/** ConcreteProductA1. Construtor package-private: so a AwsFactory instancia (RNF06). */
+// construtor sem public para so a AwsFactory conseguir criar
 class AwsMaquinaVirtual implements MaquinaVirtual {
 
     static final double CUSTO_POR_HORA = 0.10;
